@@ -1,6 +1,4 @@
 env: ENV_DEV
-log:
-  level: DEBUG
 server:
   http:
     addr: 0.0.0.0:8000
@@ -26,6 +24,10 @@ data:
     protocol: tcp
     schema: test
     params: "parseTime=True&loc=Local"
+    migrate:
+      source: file:///data/migrations
+      run: true
+      only: false
   redis:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
@@ -39,7 +41,14 @@ observability:
     production_sample_rate: 0.1
   metrics:
     endpoint: localhost:4317
-client:
-  http:
-    retry_count: 5
+  log:
+    level: DEBUG
+registry:
+  consul:
+    address: consul:8500
+    scheme: http
+auth:
+  token_private_key:
+  token_public_key:
+  token_ttl: 3600s
 app:
