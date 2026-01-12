@@ -1,9 +1,13 @@
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
+ROOT=../../..
 
-MIGRATION_DIR = ./db/migrations
+MIGRATE_PATH = ./migrations
 MIGRATE_CMD = migrate
+
+API_PATH=$(ROOT)/api/helloworld/v1
+API_PROTO_FILES=$(shell find $(API_PATH) -name *.proto)
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -48,8 +52,21 @@ migration:
 		echo "❌ 请指定 name 参数，如: make migrate-create name=create_user"; \
 		exit 1; \
 	fi
-	@migrate create -ext sql -dir db/migrations -seq "$(name)"
+	@migrate create -ext sql -dir $(MIGRATE_PATH) -seq "$(name)"
 	@echo "✅ Migration created: $(name)"
+
+.PHONY: api
+# generate api proto
+api:
+	protoc --proto_path=$(ROOT)/api \
+	       --proto_path=$(ROOT)/third_party \
+ 	       --go_out=paths=source_relative:$(ROOT)/api \
+ 	       --go-http_out=paths=source_relative:$(ROOT)/api \
+ 	       --go-grpc_out=paths=source_relative:$(ROOT)/api \
+		   --go-errors_out=paths=source_relative:$(ROOT)/api \
+		   --validate_out=paths=source_relative,lang=go:$(ROOT)/api \
+	       --openapi_out=fq_schema_naming=true,default_response=false,version=$(VERSION):$(API_PATH) \
+	       $(API_PROTO_FILES)
 
 # show help
 help:
