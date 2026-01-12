@@ -13,6 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
@@ -35,13 +36,19 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(
+	logger log.Logger,
+	rr registry.Registrar,
+	gs *grpc.Server,
+	hs *http.Server,
+) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
+		kratos.Registrar(rr),
 		kratos.Server(
 			gs,
 			hs,
@@ -77,7 +84,7 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	logger = log.NewFilter(logger, log.FilterLevel(log.ParseLevel(bc.Log.Level)))
+	logger = log.NewFilter(logger, log.FilterLevel(log.ParseLevel(bc.Observability.Log.Level)))
 
 	// init otel
 	res := otel.NewResource(logger, &bc, Name)
@@ -95,7 +102,8 @@ func main() {
 		bc.Server,
 		bc.Data,
 		bc.Observability,
-		bc.Client,
+		bc.Registry,
+		bc.Auth,
 	)
 	if err != nil {
 		panic(err)

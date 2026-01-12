@@ -11,8 +11,8 @@ message Bootstrap {
   Server server = 2;
   Data data = 3;
   Observability observability = 4;
-  Client client = 5;
-  Log log = 6;
+  Auth auth = 5;
+  Registry registry = 6;
   App app = 15;
 }
 
@@ -63,6 +63,15 @@ message Data {
     string protocol = 5;
     string schema = 6;
     string params = 7;
+
+    message Migrate {
+      string source = 1;
+      // 是否运行迁移
+      bool run = 2;
+      // 迁移完成是否直接退出
+      bool only = 3;
+    }
+    Migrate migrate = 20;
   }
   message Redis {
     string network = 1;
@@ -88,21 +97,28 @@ message Observability {
     // grpc endpoint
     string endpoint = 1;
   }
+  message Log {
+    // DEBUG, INFO, WARN, ERROR, FATAL
+    // 如果空或无效值结果为 INFO
+    string level = 1;
+  }
   Trace trace = 1;
   Metrics metrics = 2;
+  Log log = 3;
 }
 
-message Client {
-  message HTTP {
-    int32 retry_count = 1;
-  }
-  HTTP http = 1;
-} 
+message Auth {
+  string token_private_key = 1;
+  string token_public_key = 2;
+  google.protobuf.Duration token_ttl = 3;
+}
 
-message Log {
-  // DEBUG, INFO, WARN, ERROR, FATAL
-  // 如果空或无效值结果为 INFO
-  string level = 1;
+message Registry {
+  message Consul {
+    string address = 1;
+    string scheme = 2;
+  }
+  Consul consul = 1;
 }
 
 message App {

@@ -50,6 +50,7 @@ func hideInternalErrorEncoder(w http.ResponseWriter, r *http.Request, err error)
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *khttp.Server {
+	// middlewares ...
 	var middlewares = []middleware.Middleware{
 		recovery.Recovery(),
 		tracing.Server(),
@@ -66,6 +67,7 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 	}
 	middlewares = append(middlewares, validate.ProtoValidate())
 
+	// filters ...
 	var filters []khttp.FilterFunc
 	if c.Http.Cors != nil {
 		filters = append(filters, newCorsHandler(c.Http.Cors))
