@@ -18,10 +18,10 @@ import (
 func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
-			recovery.Recovery(),
 			tracing.Server(),
-			metadata.Server(),
 			logging.Server(logger),
+			recovery.Recovery(),
+			metadata.Server(),
 			validate.ProtoValidate(),
 		),
 	}
