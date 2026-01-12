@@ -7,10 +7,13 @@ WORKDIR /src
 COPY go.mod go.sum .
 RUN go mod download
 
+RUN mkdir -p pkg
+
 COPY ./app/${SERVICE_NAME} ./app/${SERVICE_NAME}
 COPY ./api ./api
 COPY ./.git ./.git
 COPY ./third_party ./third_party
+COPY ./pkg ./pkg
 RUN make -C app/${SERVICE_NAME} build
 
 # ensure the migrations and casbin directory must be exist
