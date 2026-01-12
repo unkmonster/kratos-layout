@@ -18,5 +18,7 @@ make service name=<SERVICE_NAME>
 ## Build service (Docker)
 
 ```bash
-docker build -f ./deploy/build/Dockerfile --build-arg SERVICE_NAME=<SERVICE_NAME> .
+docker build -f ./build/Dockerfile --build-arg SERVICE_NAME=<SERVICE_NAME> --build-arg CMD_NAME=<CMD_NAME> .
 ```
+
+## Next step

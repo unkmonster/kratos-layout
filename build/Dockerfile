@@ -13,6 +13,10 @@ COPY ./.git ./.git
 COPY ./third_party ./third_party
 RUN make -C app/${SERVICE_NAME} build
 
+# ensure the migrations and casbin directory must be exist
+RUN mkdir -p ./app/${SERVICE_NAME}/migrations
+RUN mkdir -p ./app/${SERVICE_NAME}/casbin
+
 FROM debian:stable-slim
 
 ARG SERVICE_NAME
@@ -25,6 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && apt-get autoremove -y && apt-get autoclean -y
 
 COPY --from=builder /src/app/${SERVICE_NAME}/bin/${CMD_NAME} /app/server
+COPY --from=builder /src/app/${SERVICE_NAME}/migrations /data/migrations
+COPY --from=builder /src/app/${SERVICE_NAME}/casbin /data/casbin
 
 WORKDIR /app
 

@@ -59,6 +59,7 @@ service:
 	kratos new $(name) -r $(LAYOUT_REPOSITORY) --nomod && \
 	mv $(name)/app.mk $(name)/Makefile && \
 	rm -rf $(name)/deploy && \
+	rm -rf $(name)/build && \
 	rm $(name)/.dockerignore
 
 .PHONY: mono
