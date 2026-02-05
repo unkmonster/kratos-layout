@@ -22,3 +22,17 @@ docker build -f ./build/Dockerfile --build-arg SERVICE_NAME=<SERVICE_NAME> --bui
 ```
 
 ## Next step
+
+## 约定
+
+### Module Format
+
+```go
+moduleName := strings.ReplaceAll(serviceName, "/", "-")
+```
+
+### Git Tag
+
+```
+{type}/{module}/{version}
+```
