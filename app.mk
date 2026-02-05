@@ -34,6 +34,10 @@ config:
 build:
 	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
 
+.PHONY: test
+test:
+	go test -v ./...
+
 .PHONY: generate
 # generate
 generate:
