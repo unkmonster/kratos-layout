@@ -1,4 +1,5 @@
-# layout 下的 Makefile
+# Makefile for repository
+
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
@@ -27,22 +28,19 @@ all:
 	make api;
 	make generate;
 
+# create a new service
 .PHONY: service
 service:
 	mkdir -p app && \
 	cd app && \
 	kratos new $(name) -r $(LAYOUT_REPOSITORY) --nomod && \
-	mv $(name)/app.mk $(name)/Makefile && \
-	rm -rf $(name)/deploy && \
-	rm -rf $(name)/build && \
-	rm $(name)/.dockerignore
+	cd $(name) && \
+	mv app.mk Makefile && \
+	rm -rf deploy build .dockerignore mock pkg
 
 .PHONY: mono
 mono:
-	rm -rf cmd && \
-	rm -rf configs && \
-	rm -rf internal && \
-	rm app.mk
+	rm -rf cmd configs internal app.mk migrations casbin
 	
 # show help
 help:
