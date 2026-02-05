@@ -60,10 +60,11 @@ func newApp(
 
 func main() {
 	flag.Parse()
+
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
-			env.NewSource(strings.ReplaceAll(Name, ".", "_")+"_"),
+			env.NewSource(strings.TrimPrefix(strings.ReplaceAll(Name, ".", "_")+"_", "_")),
 		),
 	)
 	defer c.Close()
