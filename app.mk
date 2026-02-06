@@ -1,13 +1,26 @@
+# Makefile for kratos app
+
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
-VERSION=$(shell git describe --tags --always)
-ROOT=../../..
 
-MIGRATE_PATH = ./migrations
+ROOT:=
+API_VERSION := v1
+API_PATH=$(ROOT)/api/$(SERVICE_NAME)/$(API_VERSION)
+API_PROTO_FILES=$(shell find $(API_PATH) -name *.proto)
+
+SERVICE_NAME:=
+
+# migration
+MIGRATION_PATH = ./migrations
 MIGRATE_CMD = migrate
 
-API_PATH=$(ROOT)/api/helloworld/v1
-API_PROTO_FILES=$(shell find $(API_PATH) -name *.proto)
+# service version
+ifeq ($(SERVICE_NAME),)
+	VERSION=$(shell git describe --tags --always --dirty)
+else
+	MODULE_NAME=$(subst /,-,$(SERVICE_NAME))
+	VERSION=$(shell git describe --tags --always --dirty --match "app/$(MODULE_NAME)/*")
+endif
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -24,9 +37,7 @@ endif
 # generate internal proto
 config:
 	protoc --proto_path=./internal \
-	       --proto_path=./third_party \
-	       --proto_path=../../third_party \
-	       --proto_path=../../../third_party \
+	       --proto_path=$(ROOT)/third_party \
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
@@ -57,7 +68,7 @@ migration:
 		echo "❌ 请指定 name 参数，如: make migrate-create name=create_user"; \
 		exit 1; \
 	fi
-	@migrate create -ext sql -dir $(MIGRATE_PATH) -seq "$(name)"
+	@migrate create -ext sql -dir $(MIGRATION_PATH) -seq "$(name)"
 	@echo "✅ Migration created: $(name)"
 
 .PHONY: api

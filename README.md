@@ -23,6 +23,8 @@ docker build -f ./build/Dockerfile --build-arg SERVICE_NAME=<SERVICE_NAME> --bui
 
 ## Next step
 
+1. 设置 Makefile
+
 ## 约定
 
 ### Module Format
