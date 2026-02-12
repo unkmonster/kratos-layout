@@ -41,7 +41,11 @@ service:
 .PHONY: mono
 mono:
 	rm -rf cmd configs internal app.mk migrations casbin
-	
+
+.PHONY:
+latest-tag:
+	@git describe --tags --always --dirty --match '*$(MODULE)*'
+
 # show help
 help:
 	@echo ''
