@@ -4,11 +4,11 @@ import (
 	"context"
 	"flag"
 	"os"
-	"strings"
 
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/pkg/otel"
 
+	"github.com/cyc1ones/go-kit/flag/value"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/env"
@@ -18,7 +18,6 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-
 	_ "go.uber.org/automaxprocs"
 )
 
@@ -29,13 +28,13 @@ var (
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
-	flagconf string
+	flagconf value.SliceFlag
 
 	id, _ = os.Hostname()
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.Var(&flagconf, "conf", "config path, eg: -conf config.yaml")
 }
 
 func newApp(
@@ -61,12 +60,14 @@ func newApp(
 func main() {
 	flag.Parse()
 
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
-			env.NewSource(strings.TrimPrefix(strings.ReplaceAll(Name, ".", "_")+"_", "_")),
-		),
-	)
+	cs := []config.Source{
+		env.NewSource(""),
+	}
+	for _, path := range flagconf {
+		cs = append(cs, file.NewSource(path))
+	}
+
+	c := config.New(config.WithSource(cs...))
 	defer c.Close()
 
 	if err := c.Load(); err != nil {

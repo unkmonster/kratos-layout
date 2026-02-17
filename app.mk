@@ -3,12 +3,12 @@
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 
+# TODO: edit this
 ROOT:=
+SERVICE_NAME:=
 API_VERSION := v1
 API_PATH=$(ROOT)/api/$(SERVICE_NAME)/$(API_VERSION)
 API_PROTO_FILES=$(shell find $(API_PATH) -name *.proto)
-
-SERVICE_NAME:=
 
 # migration
 MIGRATION_PATH = ./migrations
