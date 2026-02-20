@@ -36,7 +36,8 @@ func wireApp(logger log.Logger, env *conf.Env, confServer *conf.Server, confData
 	grpcServer := server.NewGRPCServer(confServer, logger, greeterService, versionService)
 	httpServer := server.NewHTTPServer(confServer, logger, greeterService, versionService)
 	background := server.NewBackground(logger)
-	app := newApp(logger, registrar, grpcServer, httpServer, background)
+	scheduler := server.NewScheduler(logger)
+	app := newApp(logger, registrar, grpcServer, httpServer, background, scheduler)
 	return app, func() {
 		cleanup()
 	}, nil

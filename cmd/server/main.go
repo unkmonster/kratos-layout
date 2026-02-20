@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/pkg/otel"
+	"github.com/go-kratos/kratos-layout/internal/server"
 	"github.com/go-kratos/kratos-layout/internal/version"
 
 	"github.com/cyc1ones/go-kit/background"
@@ -44,6 +45,7 @@ func newApp(
 	gs *grpc.Server,
 	hs *http.Server,
 	bg *background.Background,
+	scheduler *server.Scheduler,
 ) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
@@ -56,6 +58,7 @@ func newApp(
 			gs,
 			hs,
 			bg,
+			scheduler,
 		),
 	)
 }
