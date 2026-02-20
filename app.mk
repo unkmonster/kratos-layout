@@ -97,7 +97,7 @@ debug-vars:
 	@echo "--- Makefile Variables Debug ---"
 	@echo "ROOT:            $(ROOT)"
 	@echo "GO_MODULE_NAME:  $(GO_MODULE_NAME)"
-	@echo "GO_PKG_NAME:        $(GO_PKG_NAME)"
+	@echo "GO_PKG_NAME:     $(GO_PKG_NAME)"
 	@echo "SERVICE_NAME:    $(SERVICE_NAME)"
 	@echo "API_PATH:        $(API_PATH)"
 	@echo "API_PROTO_FILES: $(API_PROTO_FILES)"

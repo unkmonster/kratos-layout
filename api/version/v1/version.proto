@@ -18,7 +18,7 @@ service Version {
 
 message GetVersionRequest {}
 message GetVersionReply {
-	string Version = 1;
-	string Commit = 2;
-	string BuildTime = 3;
+	string version = 1;
+	string commit = 2;
+	string build_time = 3;
 }

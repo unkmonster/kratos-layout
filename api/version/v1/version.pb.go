@@ -60,9 +60,9 @@ func (*GetVersionRequest) Descriptor() ([]byte, []int) {
 
 type GetVersionReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Version       string                 `protobuf:"bytes,1,opt,name=Version,proto3" json:"Version,omitempty"`
-	Commit        string                 `protobuf:"bytes,2,opt,name=Commit,proto3" json:"Commit,omitempty"`
-	BuildTime     string                 `protobuf:"bytes,3,opt,name=BuildTime,proto3" json:"BuildTime,omitempty"`
+	Version       string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	Commit        string                 `protobuf:"bytes,2,opt,name=commit,proto3" json:"commit,omitempty"`
+	BuildTime     string                 `protobuf:"bytes,3,opt,name=build_time,json=buildTime,proto3" json:"build_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -123,11 +123,12 @@ var File_version_v1_version_proto protoreflect.FileDescriptor
 const file_version_v1_version_proto_rawDesc = "" +
 	"\n" +
 	"\x18version/v1/version.proto\x12\x0eapi.version.v1\x1a\x1cgoogle/api/annotations.proto\"\x13\n" +
-	"\x11GetVersionRequest\"a\n" +
+	"\x11GetVersionRequest\"b\n" +
 	"\x0fGetVersionReply\x12\x18\n" +
-	"\aVersion\x18\x01 \x01(\tR\aVersion\x12\x16\n" +
-	"\x06Commit\x18\x02 \x01(\tR\x06Commit\x12\x1c\n" +
-	"\tBuildTime\x18\x03 \x01(\tR\tBuildTime2p\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x16\n" +
+	"\x06commit\x18\x02 \x01(\tR\x06commit\x12\x1d\n" +
+	"\n" +
+	"build_time\x18\x03 \x01(\tR\tbuildTime2p\n" +
 	"\aVersion\x12e\n" +
 	"\n" +
 	"GetVersion\x12!.api.version.v1.GetVersionRequest\x1a\x1f.api.version.v1.GetVersionReply\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/v1/versionBH\n" +
