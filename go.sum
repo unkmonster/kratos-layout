@@ -56,6 +56,8 @@ github.com/containerd/errdefs/pkg v0.3.0 h1:9IKJ06FvyNlexW690DXuQNx2KA2cUJXx151X
 github.com/containerd/errdefs/pkg v0.3.0/go.mod h1:NJw6s9HwNuRhnjJhM7pylWwMyAkmCQvQ4GpJHEqRLVk=
 github.com/cyc1ones/go-kit v0.1.0 h1:+22elvDw9rQ/4R0qQxNQktsKhNXoyX5yDDtSPOAmMtU=
 github.com/cyc1ones/go-kit v0.1.0/go.mod h1:i/qUJgeKFa2zX/vzXWlAEzHxE6A9HfjErM/55VFljK0=
+github.com/cyc1ones/go-kit v0.2.1 h1:9R97ATyN4htjP4wh8qo/ZyY5VvN+9GYenVsSrSOgkfA=
+github.com/cyc1ones/go-kit v0.2.1/go.mod h1:BzdsyxcIQkRtN9kDx/oE0EvAGMNI2kH3pNpgrzXzwyI=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=

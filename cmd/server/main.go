@@ -9,6 +9,7 @@ import (
 	"github.com/go-kratos/kratos-layout/internal/pkg/otel"
 	"github.com/go-kratos/kratos-layout/internal/version"
 
+	"github.com/cyc1ones/go-kit/background"
 	"github.com/cyc1ones/go-kit/flag/value"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -42,6 +43,7 @@ func newApp(
 	rr registry.Registrar,
 	gs *grpc.Server,
 	hs *http.Server,
+	bg *background.Background,
 ) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
@@ -53,6 +55,7 @@ func newApp(
 		kratos.Server(
 			gs,
 			hs,
+			bg,
 		),
 	)
 }

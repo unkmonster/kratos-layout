@@ -3,7 +3,7 @@ module github.com/go-kratos/kratos-layout
 go 1.25.3
 
 require (
-	github.com/cyc1ones/go-kit v0.1.0
+	github.com/cyc1ones/go-kit v0.2.1
 	github.com/go-kratos/kratos/contrib/middleware/validate/v2 v2.0.0-20250527152916-d6f5f00cf562
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20260105075216-c7a58ff59f80
 	github.com/go-kratos/kratos/v2 v2.9.2
