@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package api.version.v1;
+
+option go_package = "github.com/go-kratos/kratos-layout/api/version/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.version.v1";
+
+import "google/api/annotations.proto";
+
+service Version {
+	rpc GetVersion (GetVersionRequest) returns (GetVersionReply) {
+		option (google.api.http) = {
+			get: "/v1/version"
+		};
+	}
+}
+
+message GetVersionRequest {}
+message GetVersionReply {
+	string Version = 1;
+	string Commit = 2;
+	string BuildTime = 3;
+}

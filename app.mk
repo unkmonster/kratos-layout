@@ -51,7 +51,7 @@ build:
 	mkdir -p bin/ && \
 		go build \
 		-ldflags \
-		"-X $(VERSION_PKG_NAME).Version=$(VERSION)" -X $(VERSION_PKG_NAME).BuildTime=$(BUILD_TIME) \
+		"-X $(VERSION_PKG_NAME).Version=$(VERSION) -X $(VERSION_PKG_NAME).BuildTime=$(BUILD_TIME)" \
 		-o ./bin/ ./...
 
 .PHONY: test

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	v1 "github.com/go-kratos/kratos-layout/api/helloworld/v1"
+	versionv1 "github.com/go-kratos/kratos-layout/api/version/v1"
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/service"
 	"github.com/gorilla/handlers"
@@ -49,7 +50,12 @@ func hideInternalErrorEncoder(w http.ResponseWriter, r *http.Request, err error)
 }
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *khttp.Server {
+func NewHTTPServer(
+	c *conf.Server,
+	logger log.Logger,
+	greeter *service.GreeterService,
+	version *service.VersionService,
+) *khttp.Server {
 	// middlewares ...
 	var middlewares = []middleware.Middleware{
 		tracing.Server(),
@@ -91,5 +97,6 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 
 	srv := khttp.NewServer(opts...)
 	v1.RegisterGreeterHTTPServer(srv, greeter)
+	versionv1.RegisterVersionHTTPServer(srv, version)
 	return srv
 }
