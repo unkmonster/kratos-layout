@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/pkg/otel"
+	"github.com/go-kratos/kratos-layout/internal/version"
 
 	"github.com/cyc1ones/go-kit/flag/value"
 	"github.com/go-kratos/kratos/v2"
@@ -23,10 +24,9 @@ import (
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
-	// Name is the name of the compiled software.
-	Name string
-	// Version is the version of the compiled software.
-	Version string
+	// name is the name of the compiled software.
+	// TODO: set this variable
+	name string
 	// flagconf is the config flag.
 	flagconf value.SliceFlag
 
@@ -45,8 +45,8 @@ func newApp(
 ) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
-		kratos.Name(Name),
-		kratos.Version(Version),
+		kratos.Name(name),
+		kratos.Version(version.Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
 		kratos.Registrar(rr),
@@ -84,15 +84,16 @@ func main() {
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
+		"service.name", name,
+		"service.version", version.Version,
+		"service.commit", version.Commit,
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
 	logger = log.NewFilter(logger, log.FilterLevel(log.ParseLevel(bc.Observability.Log.Level)))
 
 	// init otel
-	res := otel.NewResource(logger, &bc, Name)
+	res := otel.NewResource(logger, &bc, name)
 	close := otel.InitTraceProvider(
 		logger,
 		otel.NewSampler(&bc),

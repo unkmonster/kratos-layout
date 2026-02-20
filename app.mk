@@ -3,12 +3,16 @@
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 
-# TODO: edit this
-ROOT:=
-SERVICE_NAME:=
+BUILD_TIME:=$(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 API_VERSION := v1
+ROOT:=$(shell go list -m -f '{{.Dir}}')
+GO_MODULE_NAME:=$(shell go list -m)
+GO_PKG_NAME:=$(shell go list)
+SERVICE_NAME:=$(subst $(GO_MODULE_NAME)/app/,,$(GO_PKG_NAME))
 API_PATH=$(ROOT)/api/$(SERVICE_NAME)/$(API_VERSION)
 API_PROTO_FILES=$(shell find $(API_PATH) -name *.proto)
+
+VERSION_PKG_NAME=$(GO_PKG_NAME)/internal/version
 
 # migration
 MIGRATION_PATH = ./migrations
@@ -44,7 +48,11 @@ config:
 .PHONY: build
 # build
 build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
+	mkdir -p bin/ && \
+		go build \
+		-ldflags \
+		"-X $(VERSION_PKG_NAME).Version=$(VERSION)" -X $(VERSION_PKG_NAME).BuildTime=$(BUILD_TIME) \
+		-o ./bin/ ./...
 
 .PHONY: test
 test:
@@ -83,6 +91,17 @@ api:
 		   --validate_out=paths=source_relative,lang=go:$(ROOT)/api \
 	       --openapi_out=fq_schema_naming=true,default_response=false,version=$(VERSION):$(API_PATH) \
 	       $(API_PROTO_FILES)
+
+.PHONY: debug-vars
+debug-vars:
+	@echo "--- Makefile Variables Debug ---"
+	@echo "ROOT:            $(ROOT)"
+	@echo "GO_MODULE_NAME:  $(GO_MODULE_NAME)"
+	@echo "GO_PKG_NAME:        $(GO_PKG_NAME)"
+	@echo "SERVICE_NAME:    $(SERVICE_NAME)"
+	@echo "API_PATH:        $(API_PATH)"
+	@echo "API_PROTO_FILES: $(API_PROTO_FILES)"
+	@echo "--------------------------------"
 
 # show help
 help:

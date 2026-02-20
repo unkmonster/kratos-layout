@@ -12,7 +12,7 @@ git init
 ## Create a service
 
 ```bash
-make service name=<SERVICE_NAME>
+make service NAME=<SERVICE_NAME>
 ```
 
 ## Build service (Docker)
@@ -26,6 +26,10 @@ docker build -f ./build/Dockerfile --build-arg SERVICE_NAME=<SERVICE_NAME> --bui
 1. 设置 Makefile
 
 ## 约定
+
+### Service Name
+
+service_name 是服务目录相对于 app 的目录名
 
 ### Module Format
 

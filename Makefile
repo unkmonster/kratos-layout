@@ -33,10 +33,11 @@ all:
 service:
 	mkdir -p app && \
 	cd app && \
-	kratos new $(name) -r $(LAYOUT_REPOSITORY) --nomod && \
-	cd $(name) && \
+	kratos new $(NAME) -r $(LAYOUT_REPOSITORY) --nomod && \
+	cd $(NAME) && \
 	mv app.mk Makefile && \
-	rm -rf deploy build .dockerignore mock pkg
+	rm -rf deploy build .dockerignore mock pkg && \
+	echo "package $$(basename $$PWD)" > doc.go
 
 .PHONY: mono
 mono:
