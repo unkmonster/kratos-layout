@@ -116,6 +116,7 @@ func main() {
 		bc.Observability,
 		bc.Registry,
 		bc.Auth,
+		bc.Scheduler,
 	)
 	if err != nil {
 		panic(err)

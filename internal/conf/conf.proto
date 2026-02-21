@@ -13,6 +13,7 @@ message Bootstrap {
   Observability observability = 4;
   Auth auth = 5;
   Registry registry = 6;
+  Scheduler scheduler = 7;
   App app = 15;
 }
 
@@ -119,6 +120,14 @@ message Registry {
     string scheme = 2;
   }
   Consul consul = 1;
+}
+
+message Scheduler {
+  bool with_seconds = 1;
+  message Jobs {
+    
+  }
+  Jobs jobs = 2;
 }
 
 message App {

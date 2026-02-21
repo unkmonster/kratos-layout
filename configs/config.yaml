@@ -52,3 +52,7 @@ auth:
   token_public_key:
   token_ttl: 3600s
 app:
+scheduler:
+  with_seconds: true
+  jobs:
+    

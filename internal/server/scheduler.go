@@ -3,11 +3,13 @@ package server
 import (
 	"context"
 
+	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/robfig/cron/v3"
 )
 
+// Scheduler is a cron wrapper
 type Scheduler struct {
 	c   *cron.Cron
 	log *log.Helper
@@ -15,8 +17,14 @@ type Scheduler struct {
 
 var _ transport.Server = (*Scheduler)(nil)
 
-func NewScheduler(logger log.Logger) *Scheduler {
-	c := cron.New()
+func NewScheduler(conf *conf.Scheduler, logger log.Logger) *Scheduler {
+	opts := []cron.Option{}
+	if conf.WithSeconds {
+		opts = append(opts, cron.WithSeconds())
+	}
+
+	c := cron.New(opts...)
+	// TODO: register cron jobs
 
 	return &Scheduler{
 		c:   c,
