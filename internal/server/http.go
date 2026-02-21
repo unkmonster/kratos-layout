@@ -3,15 +3,14 @@ package server
 import (
 	"net/http"
 
+	"github.com/cyc1ones/go-kit/errors"
+	"github.com/cyc1ones/go-kit/kratos/middleware/realip"
 	v1 "github.com/go-kratos/kratos-layout/api/helloworld/v1"
 	versionv1 "github.com/go-kratos/kratos-layout/api/version/v1"
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/service"
-	"github.com/gorilla/handlers"
-	"github.com/unkmonster/go-kit/middleware/http/realip"
 
 	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -21,32 +20,16 @@ import (
 	khttp "github.com/go-kratos/kratos/v2/transport/http"
 )
 
-func newCorsHandler(c *conf.Server_HTTP_CORS) func(http.Handler) http.Handler {
-	opts := []handlers.CORSOption{
-		handlers.AllowedHeaders(c.AllowedHeaders),
-		handlers.AllowedMethods(c.AllowedMethods),
-		handlers.AllowedOrigins(c.AllowedOrigins),
-	}
-
-	if c.AllowCredentials {
-		opts = append(opts, handlers.AllowCredentials())
-	}
-
-	return handlers.CORS(
-		opts...,
-	)
+func errorEncoder(w http.ResponseWriter, r *http.Request, err error) {
+	khttp.DefaultErrorEncoder(w, r, errors.Sanitize(err))
 }
 
-// hideInternalErrorEncoder 如果 err 不为 kratos error 响应 500 INTERNAL_SERVER_ERROR 给客户端
-func hideInternalErrorEncoder(w http.ResponseWriter, r *http.Request, err error) {
-	var ke *errors.Error
-	if !errors.As(err, &ke) {
-		ke = errors.InternalServer(
-			"INTERNAL_SERVER_ERROR",
-			"internal server error",
-		).WithCause(err)
-	}
-	khttp.DefaultErrorEncoder(w, r, ke)
+func newRealIPMiddleware(conf *conf.Server_HTTP_RealIP, logger log.Logger) middleware.Middleware {
+	return realip.New(
+		realip.WithLogger(logger),
+		realip.WithIPHeaders(conf.IpHeaders...),
+		realip.WithProxies(conf.TrustedProxies),
+	).Server()
 }
 
 // NewHTTPServer new an HTTP server.
@@ -64,26 +47,15 @@ func NewHTTPServer(
 		metadata.Server(),
 	}
 	if c.Http.RealIp != nil {
-		middlewares = append(middlewares, realip.Server(
-			logger,
-			realip.WithIpHeaders(c.Http.RealIp.IpHeaders),
-			realip.WithTrustedHeader(c.Http.RealIp.TrustedHeader),
-			realip.WithTrustedProxies(c.Http.RealIp.TrustedProxies),
-		))
+		middlewares = append(middlewares, newRealIPMiddleware(c.Http.RealIp, logger))
 	}
 	middlewares = append(middlewares, validate.ProtoValidate())
-
-	// filters ...
-	var filters []khttp.FilterFunc
-	if c.Http.Cors != nil {
-		filters = append(filters, newCorsHandler(c.Http.Cors))
-	}
 
 	// options...
 	var opts = []khttp.ServerOption{
 		khttp.Middleware(middlewares...),
-		khttp.Filter(filters...),
-		khttp.ErrorEncoder(hideInternalErrorEncoder),
+		khttp.ErrorEncoder(errorEncoder),
+		khttp.Logger(logger),
 	}
 	if c.Http.Network != "" {
 		opts = append(opts, khttp.Network(c.Http.Network))
@@ -95,6 +67,7 @@ func NewHTTPServer(
 		opts = append(opts, khttp.Timeout(c.Http.Timeout.AsDuration()))
 	}
 
+	// register services...
 	srv := khttp.NewServer(opts...)
 	v1.RegisterGreeterHTTPServer(srv, greeter)
 	versionv1.RegisterVersionHTTPServer(srv, version)
