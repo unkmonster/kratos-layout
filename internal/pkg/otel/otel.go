@@ -12,7 +12,7 @@ import (
 
 type ShutdownFunc func(context.Context)
 
-func NewResource(logger log.Logger, conf *conf.Bootstrap, appName string) *resourcesdk.Resource {
+func NewResource(logger log.Logger, conf *conf.App, appName string) *resourcesdk.Resource {
 	res, err := resourcesdk.New(
 		context.Background(),
 		resourcesdk.WithOS(),
@@ -21,7 +21,7 @@ func NewResource(logger log.Logger, conf *conf.Bootstrap, appName string) *resou
 		resourcesdk.WithHost(),
 		resourcesdk.WithTelemetrySDK(),
 		resourcesdk.WithAttributes(
-			attribute.String("env", conf.Env.String()),
+			attribute.String("env", conf.Env),
 			semconv.ServiceNameKey.String(appName),
 		),
 	)

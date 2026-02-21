@@ -5,23 +5,19 @@ option go_package = "github.com/go-kratos/kratos-layout/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
-// TODO 服务注册 & 发现
 message Bootstrap {
-  Env env = 1;
+  App app = 1;
   Server server = 2;
   Data data = 3;
   Observability observability = 4;
   Auth auth = 5;
   Registry registry = 6;
   Scheduler scheduler = 7;
-  App app = 15;
 }
 
-enum Env {
-  ENV_UNSPECIFIED = 0;
-  ENV_DEV = 1;
-  ENV_STAGING = 2;
-  ENV_PROD = 3;
+message App {
+  // dev, test, staging, prod
+  string env = 1; 
 }
 
 message Server {
@@ -130,6 +126,3 @@ message Scheduler {
   Jobs jobs = 2;
 }
 
-message App {
-
-}

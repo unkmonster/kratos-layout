@@ -31,11 +31,11 @@ func NewTraceExporter(logger log.Logger, c *conf.Observability) *otlptrace.Expor
 	return exp
 }
 
-func NewSampler(bs *conf.Bootstrap) tracesdk.Sampler {
-	if bs.Env == conf.Env_ENV_DEV || bs.Env == conf.Env_ENV_UNSPECIFIED {
+func NewSampler(fraction float64) tracesdk.Sampler {
+	if fraction < 0 {
 		return tracesdk.ParentBased(tracesdk.AlwaysSample())
 	}
-	return tracesdk.ParentBased(tracesdk.TraceIDRatioBased(float64(bs.Observability.Trace.ProductionSampleRate)))
+	return tracesdk.ParentBased(tracesdk.TraceIDRatioBased(fraction))
 }
 
 func InitTraceProvider(logger log.Logger, sampler tracesdk.Sampler, exp *otlptrace.Exporter, res *resourcesdk.Resource) ShutdownFunc {

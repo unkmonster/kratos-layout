@@ -1,4 +1,5 @@
-env: ENV_DEV
+app:
+  env: dev
 server:
   http:
     addr: 0.0.0.0:8000
@@ -51,7 +52,6 @@ auth:
   token_private_key:
   token_public_key:
   token_ttl: 3600s
-app:
 scheduler:
   with_seconds: true
   jobs:

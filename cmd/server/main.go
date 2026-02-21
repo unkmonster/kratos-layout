@@ -39,6 +39,21 @@ func init() {
 	flag.Var(&flagconf, "conf", "config path, eg: -conf config.yaml")
 }
 
+func initOtel(conf *conf.Bootstrap, logger log.Logger) otel.ShutdownFunc {
+	var fraction = float64(conf.Observability.Trace.ProductionSampleRate)
+	if conf.App.Env == "" || conf.App.Env == "dev" {
+		fraction = -1 // always
+	}
+
+	res := otel.NewResource(logger, conf.App, name)
+	close := otel.InitTraceProvider(
+		logger,
+		otel.NewSampler(fraction),
+		otel.NewTraceExporter(logger, conf.Observability),
+		res,
+	)
+	return close
+}
 func newApp(
 	logger log.Logger,
 	rr registry.Registrar,
@@ -66,6 +81,7 @@ func newApp(
 func main() {
 	flag.Parse()
 
+	// load configs
 	cs := []config.Source{
 		env.NewSource(""),
 	}
@@ -99,18 +115,12 @@ func main() {
 	logger = log.NewFilter(logger, log.FilterLevel(log.ParseLevel(bc.Observability.Log.Level)))
 
 	// init otel
-	res := otel.NewResource(logger, &bc, name)
-	close := otel.InitTraceProvider(
-		logger,
-		otel.NewSampler(&bc),
-		otel.NewTraceExporter(logger, bc.Observability),
-		res,
-	)
+	close := initOtel(&bc, logger)
 	defer close(context.Background())
 
 	app, cleanup, err := wireApp(
 		logger,
-		&bc.Env,
+		bc.App,
 		bc.Server,
 		bc.Data,
 		bc.Observability,
